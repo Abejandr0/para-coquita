@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>Para Coquita ❤️</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="container">
+    <h1>Para Coquita 💗</h1>
+    <h2>Razones por las que te amo</h2>
+    <p class="subtitle">Escoge una nueva, mi amor:<span></span></p>
+
+    <div id="reason-card"></div>
+    
+    <div id="challenge-display" style="display: none; margin-top: 15px;">
+        <h3 style="font-size: 18px; margin-bottom: 8px;">¡Tu Desafío de la Cita!</h3>
+        <div id="challenge-result-card" class="card" style="min-height: 80px; padding: 18px 20px; font-weight: 500; font-style: italic;"></div>
+        <p style="font-size: 13px; color: #555; margin-top: 10px;">¡Ahora, a cumplirlo! 😉</p>
+    </div>
+    <div class="actions">
+      <button id="next-reason">Ver otra razón</button>
+      <button id="toggle-music">Reproducir música 🎵</button>
+      <button id="start-challenge-btn">Desafío de la Cita 🎲</button>
+    </div>
+
+    <div class="counter">
+      <div class="counter-label">🗓️ Desde el 25 de julio de 2025</div>
+      <div id="counter-text">Calculando nuestro tiempo juntos…</div>
+    </div>
+
+    <div class="footer">
+      <span>Hecho con mucho amor<span class="heart-dot"> ❤</span></span>
+      <span class="signature">– Abejandro</span>
+    </div>
+  </div>
+
+  <audio id="bg-music" loop>
+    <source src="cancion.mp3" type="audio/mpeg" />
+  </audio>
+
+  <script src="script.js"></script>
+</body>
+</html>
