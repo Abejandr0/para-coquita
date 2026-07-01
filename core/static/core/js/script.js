@@ -106,6 +106,15 @@ function showSection(targetId) {
 }
 
 let isMelancholy = false;
+
+function goBackHome() {
+    if (isMelancholy) {
+        showSection('te-extrano-screen');
+    } else {
+        showSection('welcome-screen');
+    }
+}
+
 function toggleThemeMode() {
     isMelancholy = !isMelancholy;
     if(isMelancholy) {
@@ -130,7 +139,17 @@ function setupNavigation() {
     links.forEach(link => {
         link.addEventListener('click', () => {
             const target = link.getAttribute('data-target');
-            showSection(target);
+            if (target === 'home') {
+                isMelancholy = false;
+                document.body.classList.remove('theme-melancholy');
+                showSection('welcome-screen');
+            } else if (target === 'comeback') {
+                isMelancholy = true;
+                document.body.classList.add('theme-melancholy');
+                showSection('te-extrano-screen');
+            } else {
+                showSection(target);
+            }
             toggleMenu();
         });
     });

@@ -54,7 +54,7 @@
   </nav>
 
   <div class="container main-container">
-    <button id="back-btn" class="back-btn" onclick="showSection('welcome-screen')" style="display: none;" title="Volver al Menú Principal">🏠</button>
+    <button id="back-btn" class="back-btn" onclick="goBackHome()" style="display: none;" title="Volver al Menú Principal">🏠</button>
     <!-- PANTALLA DE BIENVENIDA NORMAL -->
     <section id="welcome-screen" class="content-section active">
       <div id="welcome-headers">
@@ -137,6 +137,16 @@
           <span class="f-icon" style="color: #818cf8;">🎧</span>
           <span class="f-text">Soundtrack</span>
         </button>
+        <button class="feature-card" onclick="showSection('comeback-last-letter')">
+          <span class="f-icon" style="color: #818cf8;">💌</span>
+          <span class="f-text">Última carta</span>
+        </button>
+      </div>
+      
+      <div style="margin-top: 30px; text-align: center;">
+        <a href="https://wa.me/573246673517?text=Hola,%20acabo%20de%20pulsar%20el%20bot%C3%B3n%20en%20nuestro%20mundo...%20%C2%BFMe%20extra%C3%B1as%20t%C3%BA%20tambi%C3%A9n?" target="_blank" class="action-btn" style="background: rgba(37, 211, 102, 0.2); border: 1px solid rgba(37, 211, 102, 0.5); color: #fff; text-decoration: none; display: inline-flex; align-items: center; justify-content: center; gap: 10px; width: auto; padding: 10px 20px;">
+          <span style="font-size: 20px;">💬</span> ¿Tú también me extrañas?
+        </a>
       </div>
     </section>
 
@@ -288,6 +298,21 @@
             <h2 class="comeback-title">🎧 Soundtrack Nostálgico</h2>
             <p class="comeback-subtitle">Canciones que huelen a ti.</p>
             <div id="nostalgic-songs-list" style="display: flex; flex-direction: column; gap: 15px;"></div>
+        </div>
+    </section>
+
+    <section id="comeback-last-letter" class="content-section comeback-section" style="display: none;">
+        <div class="comeback-overlay"></div>
+        <div class="comeback-content" style="max-width: 90%; margin: 0 auto; text-align: justify; padding: 20px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 15px;">
+            <h2 class="comeback-title" style="text-align: center; margin-bottom: 20px;">💌 Una última carta</h2>
+            <div style="font-family: 'Playfair Display', serif; font-size: 16px; color: #e2e8f0; line-height: 1.8;">
+                <p>Hola, mi amor.</p>
+                <p>No estaba seguro de si debía escribir esto o no, pero sentía que mi corazón necesitaba un espacio para dejar ir estas palabras. Aunque la distancia física ahora exista entre nosotros, la huella que dejaste en mi vida sigue tan marcada como el primer día.</p>
+                <p>Quizás las cosas no salieron como lo planeamos aquella vez que soñábamos despiertos, pero quiero que sepas que no cambiaría nada de lo vivido. Cada risa, cada mensaje de madrugada, cada momento en el que solo éramos nosotros dos contra el mundo... todo eso sigue siendo mi mayor tesoro.</p>
+                <p>Hice este rincón oscuro de la aplicación no para aferrarme al dolor, sino para honrar la belleza de lo que fuimos. Eres y siempre serás una parte fundamental de mi historia.</p>
+                <p>Si algún día sientes que el mundo pesa demasiado, recuerda que aquí, en esta pequeña cápsula en internet, alguien te amó con todas sus fuerzas y sigue deseando verte brillar.</p>
+                <p style="text-align: right; font-style: italic; margin-top: 30px;">Siempre tuyo,<br>Abejandro</p>
+            </div>
         </div>
     </section>
 
