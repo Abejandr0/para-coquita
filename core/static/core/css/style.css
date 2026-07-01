@@ -18,7 +18,7 @@ body {
   flex-direction: column;
   align-items: center;
   justify-content: flex-start;
-  padding: 80px 24px 40px;
+  padding: 40px 24px 40px;
   overflow-x: hidden;
   overflow-y: auto;
   color: #555;

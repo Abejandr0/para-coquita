@@ -423,7 +423,7 @@ function renderPlaylist() {
         li.innerHTML = `<strong>${song.title}</strong> - ${song.artist}`;
         li.onclick = () => {
             document.getElementById("song-info").innerHTML = `<strong>${song.title}</strong> - ${song.artist}`;
-            document.getElementById("song-story").innerHTML = `<div class="card-special" style="font-size:14px; line-height:1.4;">${song.story}</div>`;
+            document.getElementById("song-story").innerHTML = `<div class="card-special" style="font-size:14px; line-height:1.4;">${song.story}<br><br><a href="https://open.spotify.com/search/${encodeURIComponent(song.title + ' ' + song.artist)}" target="_blank" style="display:inline-block; background:#1db954; color:white; padding:5px 12px; border-radius:15px; text-decoration:none; font-size:12px; font-weight:bold;">▶ Reproducir en Spotify</a></div>`;
         };
         list.appendChild(li);
     });
@@ -431,11 +431,31 @@ function renderPlaylist() {
 function renderMap() { document.getElementById("map-pins-container").innerHTML = db.mapPins.map((p,i) => `<div class="map-pin" style="left:${p.x}%; top:${p.y}%" onclick="showMapDetail(${i})">${p.icon}</div>`).join(''); }
 function showMapDetail(i) { const d = document.getElementById("map-detail"); d.style.display="block"; d.innerHTML=`<strong>${db.mapPins[i].icon} ${db.mapPins[i].label}</strong><p>${db.mapPins[i].desc}</p>`; }
 function renderCalendar() { document.getElementById("calendar-list").innerHTML = db.calendar.map(c => `<div class="calendar-item"><div class="cal-date-box">${c.day}<br><span style="font-size:10px">${c.month}</span></div><div><strong>${c.title}</strong><br><small style="color:#777;">${c.desc}</small></div></div>`).join(''); }
+function showCustomModal(title, content) {
+    const modal = document.createElement("div");
+    modal.style.cssText = "position:fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(0,0,0,0.6); display:flex; align-items:center; justify-content:center; z-index:999999; backdrop-filter: blur(5px);";
+    
+    const isMelancholyTheme = document.body.classList.contains("theme-melancholy");
+    const bg = isMelancholyTheme ? "linear-gradient(135deg, #1e1b4b, #0f172a)" : "rgba(255, 255, 255, 0.9)";
+    const color = isMelancholyTheme ? "#e0e7ff" : "#555";
+    const btnBg = isMelancholyTheme ? "#6366f1" : "#ff5b8a";
+    
+    modal.innerHTML = `
+        <div style="background:${bg}; padding: 30px; border-radius: 20px; max-width: 85%; width: 400px; box-shadow: 0 15px 35px rgba(0,0,0,0.3); text-align: center; color: ${color}; font-family: 'Quicksand', sans-serif; border: 1px solid rgba(255,255,255,0.2);">
+            <h2 style="margin: 0 0 15px 0;">${title}</h2>
+            <p style="font-size: 16px; line-height: 1.6; margin-bottom: 25px;">${content}</p>
+            <button style="background: ${btnBg}; color: white; border: none; padding: 10px 25px; border-radius: 20px; font-weight: bold; cursor: pointer; font-family: inherit;">Cerrar</button>
+        </div>
+    `;
+    modal.querySelector("button").onclick = () => modal.remove();
+    document.body.appendChild(modal);
+}
+
 function renderLetters() { 
     const today = new Date();
     document.getElementById("letters-grid").innerHTML = db.letters.map(l => {
         const locked = today < new Date(l.date);
-        return `<div class="card-special" style="background:${locked?'#eee':'#fff0f6'}; cursor:${locked?'not-allowed':'pointer'}" onclick="${locked?'':`alert('${l.content}')`}"><div style="font-size:20px;">${locked?'🔒':'💌'}</div><strong>${l.title}</strong><br><small>${locked?'Disponible: '+l.date:'¡Leer ahora!'}</small></div>`;
+        return `<div class="card-special" style="background:${locked?'#eee':'#fff0f6'}; cursor:${locked?'not-allowed':'pointer'}" onclick="${locked?'':`showCustomModal('${l.title}', '${l.content}')`}"><div style="font-size:20px;">${locked?'🔒':'💌'}</div><strong>${l.title}</strong><br><small>${locked?'Disponible: '+l.date:'¡Leer ahora!'}</small></div>`;
     }).join(''); 
 }
 
@@ -504,6 +524,7 @@ function renderComebackLists() {
                 <div class="song-title">${s.title}</div>
                 <div class="song-artist" style="color: #6366f1; font-size: 13px; margin-bottom: 5px;">${s.artist}</div>
                 <div class="song-story">${s.story}</div>
+                <a href="https://open.spotify.com/search/${encodeURIComponent(s.title + ' ' + s.artist)}" target="_blank" style="display:inline-block; margin-top:10px; background:#1db954; color:white; padding:5px 12px; border-radius:15px; text-decoration:none; font-size:12px; font-weight:bold;">▶ Reproducir en Spotify</a>
             </div>
         `).join('');
     }
