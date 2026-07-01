@@ -125,10 +125,27 @@ function toggleHappyStars() {
 
 function fullscreenStars(sectionId) {
     const el = document.getElementById(sectionId);
-    if(el) {
-        if(el.requestFullscreen) el.requestFullscreen();
-        else if(el.webkitRequestFullscreen) el.webkitRequestFullscreen();
-        else if(el.msRequestFullscreen) el.msRequestFullscreen();
+    if(!el) return;
+    const wrapper = el.querySelector("div"); // finds the div holding the map
+    if(!wrapper) return;
+    
+    const isFS = wrapper.classList.contains("stars-fullscreen");
+    if(isFS) {
+        wrapper.classList.remove("stars-fullscreen");
+        const closeBtn = wrapper.querySelector(".fs-close-btn");
+        if(closeBtn) closeBtn.remove();
+    } else {
+        wrapper.classList.add("stars-fullscreen");
+        const closeBtn = document.createElement("button");
+        closeBtn.className = "fs-close-btn";
+        closeBtn.innerHTML = "✕ Cerrar";
+        closeBtn.style.cssText = "position: absolute; top: 20px; right: 20px; z-index: 100000; background: rgba(0,0,0,0.6); color: white; border: 1px solid white; padding: 8px 15px; border-radius: 20px; cursor: pointer; font-family: sans-serif; font-size: 14px;";
+        closeBtn.onclick = (e) => {
+            e.stopPropagation();
+            wrapper.classList.remove("stars-fullscreen");
+            closeBtn.remove();
+        };
+        wrapper.appendChild(closeBtn);
     }
 }
 
