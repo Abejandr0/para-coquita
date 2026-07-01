@@ -97,23 +97,27 @@
         </button>
         <button class="feature-card" onclick="showSection('calendar')">
           <span class="f-icon">📆</span>
-          <span class="f-text">Citas</span>
+          <span class="f-text">Citas Futuras</span>
         </button>
-        <button class="feature-card" onclick="showSection('diary')">
-          <span class="f-icon">📖</span>
-          <span class="f-text">Diario</span>
+        <button class="feature-card" onclick="showSection('constellations-happy')">
+          <span class="f-icon">✨</span>
+          <span class="f-text">Constelaciones</span>
+        </button>
+        <button class="feature-card feature-comeback" onclick="enterMelancholyMode()">
+          <span class="f-icon">🌙</span>
+          <span class="f-text">Volver</span>
         </button>
         <button class="feature-card" onclick="showSection('letters')">
           <span class="f-icon">✉️</span>
           <span class="f-text">Cartas</span>
         </button>
+        <button class="feature-card" onclick="showSection('diary')">
+          <span class="f-icon">📖</span>
+          <span class="f-text">Diario</span>
+        </button>
         <button class="feature-card" onclick="showSection('secret')">
           <span class="f-icon">🔒</span>
           <span class="f-text">Secreto</span>
-        </button>
-        <button class="feature-card feature-comeback" onclick="toggleThemeMode()">
-          <span class="f-icon" style="color: #6366f1;">🌙</span>
-          <span class="f-text">Te extraño</span>
         </button>
       </div>
     </section>
@@ -140,6 +144,10 @@
         <button class="feature-card" onclick="showSection('comeback-last-letter')">
           <span class="f-icon" style="color: #818cf8;">💌</span>
           <span class="f-text">Última carta</span>
+        </button>
+        <button class="feature-card" onclick="showSection('constellations-sad')">
+          <span class="f-icon" style="color: #818cf8;">✨</span>
+          <span class="f-text">Cielo Nocturno</span>
         </button>
       </div>
       
@@ -253,6 +261,12 @@
         <div id="diary-entries" class="scroll-container"></div>
     </section>
 
+    <section id="constellations-happy" class="content-section" style="display: none;">
+        <h2 style="position: absolute; top: 20px; left: 0; right: 0; text-align: center; color: white; z-index: 10; text-shadow: 0 2px 4px rgba(0,0,0,0.8);">✨ Nuestro Cielo</h2>
+        <canvas id="canvas-happy" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: #000; border-radius: 20px;"></canvas>
+        <div id="tooltip-happy" style="position: absolute; display: none; background: rgba(0,0,0,0.8); color: white; padding: 10px; border-radius: 8px; z-index: 20; border: 1px solid #ff5b8a; transform: translate(-50%, -100%); margin-top: -15px;"></div>
+    </section>
+
     <section id="letters" class="content-section" style="display: none;">
         <h2>✉️ Cartas Futuras</h2>
         <div id="letters-grid" class="cards-grid"></div>
@@ -314,6 +328,13 @@
                 <p style="text-align: right; font-style: italic; margin-top: 30px;">Siempre tuyo,<br>Abejandro</p>
             </div>
         </div>
+    </section>
+
+    <section id="constellations-sad" class="content-section comeback-section" style="display: none;">
+        <div class="comeback-overlay"></div>
+        <h2 style="position: absolute; top: 20px; left: 0; right: 0; text-align: center; color: white; z-index: 10; text-shadow: 0 2px 4px rgba(0,0,0,0.8);">✨ El Cielo se Nubló</h2>
+        <canvas id="canvas-sad" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: #000; border-radius: 20px;"></canvas>
+        <div id="tooltip-sad" style="position: absolute; display: none; background: rgba(0,0,0,0.8); color: white; padding: 10px; border-radius: 8px; z-index: 20; border: 1px solid #818cf8; transform: translate(-50%, -100%); margin-top: -15px;"></div>
     </section>
 
     <div class="footer">

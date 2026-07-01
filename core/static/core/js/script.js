@@ -113,15 +113,15 @@ function goBackHome() {
     showSection('welcome-screen');
 }
 
+function enterMelancholyMode() {
+    isMelancholy = true;
+    document.body.classList.add('theme-melancholy');
+    showSection('te-extrano-screen');
+}
+
 function toggleThemeMode() {
-    isMelancholy = !isMelancholy;
-    if(isMelancholy) {
-        document.body.classList.add('theme-melancholy');
-        showSection('te-extrano-screen');
-    } else {
-        document.body.classList.remove('theme-melancholy');
-        showSection('welcome-screen');
-    }
+    // Deprecated, use enterMelancholyMode
+    enterMelancholyMode();
 }
 
 function setupNavigation() {
@@ -138,13 +138,9 @@ function setupNavigation() {
         link.addEventListener('click', () => {
             const target = link.getAttribute('data-target');
             if (target === 'home') {
-                isMelancholy = false;
-                document.body.classList.remove('theme-melancholy');
-                showSection('welcome-screen');
+                goBackHome();
             } else if (target === 'comeback') {
-                isMelancholy = true;
-                document.body.classList.add('theme-melancholy');
-                showSection('te-extrano-screen');
+                enterMelancholyMode();
             } else {
                 showSection(target);
             }
@@ -422,7 +418,116 @@ function renderComebackLists() {
 }
 
 /* =========================================
-   6. INICIALIZACIÓN
+   6. CONSTELACIONES (CANVAS)
+   ========================================= */
+function initConstellations(canvasId, tooltipId, starsData, connectLines, starColor) {
+    const canvas = document.getElementById(canvasId);
+    if(!canvas) return;
+    const ctx = canvas.getContext('2d');
+    const tooltip = document.getElementById(tooltipId);
+    
+    let width, height;
+    function resize() {
+        width = canvas.parentElement.clientWidth || window.innerWidth;
+        height = canvas.parentElement.clientHeight || window.innerHeight;
+        canvas.width = width;
+        canvas.height = height;
+    }
+    window.addEventListener('resize', resize);
+    resize();
+
+    // Fondo de estrellas
+    const bgStars = Array.from({length: 150}, () => ({
+        x: Math.random(), y: Math.random(),
+        s: Math.random() * 1.5,
+        a: Math.random() * Math.PI * 2,
+        speed: 0.02 + Math.random() * 0.03
+    }));
+
+    const mainStars = starsData.map(st => ({
+        ...st,
+        x: 0.1 + Math.random() * 0.8,
+        y: 0.2 + Math.random() * 0.6,
+        radius: 6 + Math.random() * 3
+    }));
+
+    function draw() {
+        ctx.clearRect(0, 0, width, height);
+        
+        // Dibujar estrellas de fondo
+        ctx.fillStyle = starColor;
+        bgStars.forEach(bs => {
+            bs.a += bs.speed;
+            ctx.globalAlpha = 0.3 + 0.7 * Math.abs(Math.sin(bs.a));
+            ctx.beginPath();
+            ctx.arc(bs.x * width, bs.y * height, bs.s, 0, Math.PI * 2);
+            ctx.fill();
+        });
+        
+        ctx.globalAlpha = 1;
+
+        // Dibujar líneas si se solicita
+        if(connectLines && mainStars.length > 1) {
+            ctx.strokeStyle = "rgba(255, 255, 255, 0.2)";
+            ctx.lineWidth = 1;
+            ctx.beginPath();
+            ctx.moveTo(mainStars[0].x * width, mainStars[0].y * height);
+            for(let i=1; i<mainStars.length; i++) {
+                ctx.lineTo(mainStars[i].x * width, mainStars[i].y * height);
+            }
+            ctx.stroke();
+        }
+
+        // Dibujar estrellas principales
+        mainStars.forEach(ms => {
+            ctx.shadowBlur = 15;
+            ctx.shadowColor = starColor;
+            ctx.fillStyle = "#fff";
+            ctx.beginPath();
+            ctx.arc(ms.x * width, ms.y * height, ms.radius, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.shadowBlur = 0;
+            
+            // Halo sutil
+            ctx.fillStyle = "rgba(255,255,255,0.1)";
+            ctx.beginPath();
+            ctx.arc(ms.x * width, ms.y * height, ms.radius * 2.5, 0, Math.PI * 2);
+            ctx.fill();
+        });
+
+        requestAnimationFrame(draw);
+    }
+    draw();
+
+    // Interactividad
+    canvas.addEventListener('mousemove', (e) => {
+        const rect = canvas.getBoundingClientRect();
+        const mouseX = e.clientX - rect.left;
+        const mouseY = e.clientY - rect.top;
+        
+        let hovered = false;
+        mainStars.forEach(ms => {
+            const dx = mouseX - ms.x * width;
+            const dy = mouseY - ms.y * height;
+            if(Math.sqrt(dx*dx + dy*dy) < ms.radius * 4) {
+                tooltip.style.display = 'block';
+                tooltip.style.left = (ms.x * width) + 'px';
+                tooltip.style.top = (ms.y * height - 10) + 'px';
+                tooltip.innerHTML = `<strong>${ms.date}</strong><br><span style="font-size:12px;">${ms.title}</span>`;
+                hovered = true;
+                canvas.style.cursor = 'pointer';
+            }
+        });
+        
+        if(!hovered) {
+            tooltip.style.display = 'none';
+            canvas.style.cursor = 'default';
+        }
+    });
+}
+
+/* =========================================
+   7. INICIALIZACIÓN
    ========================================= */
 window.onload = () => {
     // Animación de Entrada
@@ -441,6 +546,16 @@ window.onload = () => {
     renderTimeline(); renderPlaylist(); renderMap(); renderCalendar(); renderDiary(); renderLetters();
     renderComeback();
     renderComebackLists();
+    
+    // Iniciar Constelaciones
+    initConstellations("canvas-happy", "tooltip-happy", [
+        {date: "27 de mayo de 2025", title: "Empezamos a hablar"},
+        {date: "25 de julio de 2025", title: "Nos hicimos novios"}
+    ], true, "#ffb6c1");
+    
+    initConstellations("canvas-sad", "tooltip-sad", [
+        {date: "18 de abril de 2026", title: "Nos separamos"}
+    ], false, "#a5b4fc");
 
     // Listeners
     document.getElementById("next-reason").onclick = showRandomReason;
