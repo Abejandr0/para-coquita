@@ -4,11 +4,22 @@ from django.views.decorators.csrf import csrf_exempt
 import json
 from .models import (Reason, QuickChallenge, WeeklyChallenge, QuizQuestion, 
                      RouletteOption, MysteryContent, TimelineEvent, PlaylistSong, 
-                     MapPin, CalendarEvent, DiaryEntry, Letter)
+                     MapPin, CalendarEvent, DiaryEntry, Letter, ComebackReason,
+                     UnsentLetter, NostalgicSong)
 
 def home(request):
     data = {
         "reasons": [r.text for r in Reason.objects.all()],
+        "comebackReasons": [
+            {"day": r.day_number, "text": r.text}
+            for r in ComebackReason.objects.order_by("day_number")
+        ],
+        "unsentLetters": [
+            {"title": l.title, "text": l.text} for l in UnsentLetter.objects.all()
+        ],
+        "nostalgicSongs": [
+            {"title": s.title, "artist": s.artist, "story": s.story} for s in NostalgicSong.objects.all()
+        ],
         "quickChallenges": [q.text for q in QuickChallenge.objects.all()],
         "weeklyChallenges": [w.text for w in WeeklyChallenge.objects.all()],
         "quiz": [
@@ -46,6 +57,7 @@ def home(request):
         ],
         "config": {
             "startDate": "2025-07-25T00:00:00",
+            "comebackStartDate": "2026-07-01T00:00:00",
             "birthday": "07-25", 
             "secretPin": "2506"
         }

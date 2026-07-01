@@ -5,6 +5,22 @@ class Reason(models.Model):
     text = models.TextField()
     def __str__(self): return self.text[:50]
 
+class ComebackReason(models.Model):
+    day_number = models.IntegerField(unique=True, help_text="Día (0, 1, 2...) en el que se desbloquea.")
+    text = models.TextField()
+    def __str__(self): return f"Día {self.day_number}: {self.text[:50]}"
+
+class UnsentLetter(models.Model):
+    title = models.CharField(max_length=255)
+    text = models.TextField()
+    def __str__(self): return self.title
+
+class NostalgicSong(models.Model):
+    title = models.CharField(max_length=255)
+    artist = models.CharField(max_length=255)
+    story = models.TextField()
+    def __str__(self): return self.title
+
 class QuickChallenge(models.Model):
     text = models.TextField()
     def __str__(self): return self.text[:50]

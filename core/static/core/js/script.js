@@ -91,12 +91,29 @@ function showSection(targetId) {
 
     // Show or hide back button based on whether we are on welcome screen
     const backBtn = document.getElementById('back-btn');
-    if(backBtn) {
-        if(targetId === 'welcome-screen') {
-            backBtn.style.display = 'none';
-        } else {
-            backBtn.style.display = 'flex';
-        }
+    const menuBtn = document.getElementById('menu-btn');
+    const themeBtn = document.getElementById('theme-toggle');
+    
+    if(targetId === 'welcome-screen' || targetId === 'te-extrano-screen') {
+        if(backBtn) backBtn.style.display = 'none';
+        if(menuBtn) menuBtn.style.display = 'none';
+        if(themeBtn) themeBtn.style.display = 'none';
+    } else {
+        if(backBtn) backBtn.style.display = 'flex';
+        if(menuBtn) menuBtn.style.display = 'block';
+        if(themeBtn) themeBtn.style.display = 'block';
+    }
+}
+
+let isMelancholy = false;
+function toggleThemeMode() {
+    isMelancholy = !isMelancholy;
+    if(isMelancholy) {
+        document.body.classList.add('theme-melancholy');
+        showSection('te-extrano-screen');
+    } else {
+        document.body.classList.remove('theme-melancholy');
+        showSection('welcome-screen');
     }
 }
 
@@ -319,10 +336,84 @@ function renderLetters() {
     }).join(''); 
 }
 
+// Lógica de "Razones para Volver"
+function renderComeback() {
+    const textEl = document.getElementById("comeback-text");
+    const dayEl = document.getElementById("comeback-day-display");
+    if (!textEl) return;
+
+    if (!db.comebackReasons || db.comebackReasons.length === 0) {
+        textEl.innerHTML = "Pronto descubrirás algo aquí...";
+        return;
+    }
+
+    // Calcula los días transcurridos desde una fecha (por ejemplo, el inicio original o una nueva fecha)
+    const startDate = new Date(db.config.comebackStartDate || db.config.startDate);
+    const now = new Date();
+    
+    // Si queremos que empiece "hoy" sin cambiar la fecha original, 
+    // asumimos que las razones se desbloquean basándose en db.comebackReasons[0] como hoy.
+    // Para simplificar, usaremos el índice diario:
+    // (Por ahora mostramos el primer registro o calculamos días desde una fecha fija)
+    // Usaremos un "Día X" basándonos en la diferencia de días.
+    let diffMs = now - startDate;
+    let daysSinceStart = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+    
+    // Si daysSinceStart es menor que 0 o demasiado grande, ajustamos:
+    if (daysSinceStart < 0) daysSinceStart = 0;
+    
+    // Buscar la razón correspondiente a este día (o anterior si no hay exacta)
+    let reasonToShow = db.comebackReasons.find(r => r.day === daysSinceStart);
+    
+    if (!reasonToShow) {
+        // Mostrar la última desbloqueada
+        const available = db.comebackReasons.filter(r => r.day <= daysSinceStart);
+        if (available.length > 0) {
+            reasonToShow = available[available.length - 1];
+        } else {
+            reasonToShow = db.comebackReasons[0]; // Fallback
+        }
+    }
+
+    if (reasonToShow) {
+        textEl.innerHTML = reasonToShow.text;
+        dayEl.innerHTML = `Día ${reasonToShow.day}`;
+    }
+}
+
+function renderComebackLists() {
+    const lettersContainer = document.getElementById("unsent-letters-list");
+    if(lettersContainer && db.unsentLetters) {
+        lettersContainer.innerHTML = db.unsentLetters.map(l => `
+            <div class="letter-item">
+                <div class="letter-title">${l.title}</div>
+                <div class="letter-text">${l.text}</div>
+            </div>
+        `).join('');
+    }
+
+    const songsContainer = document.getElementById("nostalgic-songs-list");
+    if(songsContainer && db.nostalgicSongs) {
+        songsContainer.innerHTML = db.nostalgicSongs.map(s => `
+            <div class="song-item">
+                <div class="song-title">${s.title}</div>
+                <div class="song-artist">${s.artist}</div>
+                <div class="song-story">${s.story}</div>
+            </div>
+        `).join('');
+    }
+}
+
 /* =========================================
    6. INICIALIZACIÓN
    ========================================= */
 window.onload = () => {
+    // Animación de Entrada
+    setTimeout(() => {
+        const intro = document.getElementById('intro-animation');
+        if(intro) intro.classList.add('hidden');
+    }, 3000);
+
     setupNavigation();
     showRandomReason();
     createFloatingHearts();
@@ -331,9 +422,25 @@ window.onload = () => {
     // Cargar todo
     loadWeeklyChallenge(); loadQuiz(); setupRoulette(); setupMysteryBox();
     renderTimeline(); renderPlaylist(); renderMap(); renderCalendar(); renderDiary(); renderLetters();
+    renderComeback();
+    renderComebackLists();
 
     // Listeners
     document.getElementById("next-reason").onclick = showRandomReason;
+    
+    // New listener for random comeback reason
+    const btnReveal = document.getElementById("btn-reveal-reason");
+    if(btnReveal) {
+        btnReveal.onclick = () => {
+            if(db.comebackReasons && db.comebackReasons.length > 0) {
+                const randomReason = db.comebackReasons[Math.floor(Math.random() * db.comebackReasons.length)];
+                document.getElementById("comeback-text").innerHTML = randomReason.text;
+                document.getElementById("comeback-day-display").innerHTML = `Día ${randomReason.day}`;
+            }
+        };
+    }
+
+    // Modal listeners
     document.getElementById("start-challenge-btn").onclick = startHomeChallenge;
     
     // Listener para guardar diario
@@ -347,6 +454,9 @@ window.onload = () => {
     const playPauseBtn = document.getElementById("fab-playpause");
     const volumeSlider = document.getElementById("fab-volume");
 
+    const svgPlay = document.getElementById("svg-play");
+    const svgPause = document.getElementById("svg-pause");
+
     fabTrigger.onclick = () => {
         fabContainer.classList.toggle("open");
     };
@@ -354,15 +464,19 @@ window.onload = () => {
     playPauseBtn.onclick = () => {
         if(audio.paused) {
             audio.play().catch(e=>console.log("Audio bloqueado por el navegador"));
-            playPauseBtn.innerText = "⏸️";
+            if(svgPlay) svgPlay.style.display = 'none';
+            if(svgPause) svgPause.style.display = 'block';
         } else {
             audio.pause();
-            playPauseBtn.innerText = "▶️";
+            if(svgPlay) svgPlay.style.display = 'block';
+            if(svgPause) svgPause.style.display = 'none';
         }
     };
 
-    document.getElementById("fab-prev").onclick = () => alert("¡Próximamente más canciones! 🎵");
-    document.getElementById("fab-next").onclick = () => alert("¡Próximamente más canciones! 🎵");
+    const fabPrev = document.getElementById("fab-prev");
+    const fabNext = document.getElementById("fab-next");
+    if(fabPrev) fabPrev.onclick = () => alert("¡Próximamente más canciones! 🎵");
+    if(fabNext) fabNext.onclick = () => alert("¡Próximamente más canciones! 🎵");
 
     volumeSlider.oninput = (e) => {
         audio.volume = e.target.value;
@@ -373,6 +487,11 @@ window.onload = () => {
             document.getElementById("secret-lock").style.display="none"; document.getElementById("secret-content").style.display="block";
         } else alert("Contraseña incorrecta 🐝");
     };
+    
+    const themeToggleBtn = document.getElementById("theme-toggle");
+    if(themeToggleBtn) {
+        themeToggleBtn.onclick = toggleThemeMode;
+    }
 
     setInterval(updateCounter, 1000);
     setInterval(() => {

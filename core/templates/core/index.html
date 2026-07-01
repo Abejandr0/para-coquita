@@ -12,16 +12,27 @@
   <link rel="stylesheet" href="{% static 'core/css/style.css' %}" />
 </head>
 <body>
+  <!-- ANIMACIÓN DE ENTRADA -->
+  <div id="intro-animation">
+    <div class="intro-content">
+      <h1 class="intro-title">Para ti, mi amor...</h1>
+      <p class="intro-text">Un rincón especial solo para nosotros dos ✨</p>
+      <div class="intro-heart">💖</div>
+    </div>
+  </div>
 
-  <button id="menu-btn" class="menu-btn">☰ Menú</button>
+  <button id="menu-btn" class="menu-btn" style="display: none;">☰ Menú</button>
+  <button id="theme-toggle" class="menu-btn" style="left: 120px; display: none;">🌙 Te extraño</button>
 
   <nav id="sidebar" class="sidebar">
     <div class="sidebar-header">
-      <h3>Nuestro Mundo 🌎</h3>
+      <div class="profile-pic">💕</div>
+      <h3>Nuestro Mundo</h3>
       <button id="close-menu" class="close-btn">&times;</button>
     </div>
     <ul class="nav-links">
       <li data-target="home">🏠 Inicio</li>
+      <li data-target="comeback" class="nav-comeback">🌙 Razones para Volver</li>
       
       <li data-target="quiz">💞 Test: ¿Me conoces?</li>
       <li data-target="roulette">🎡 Ruleta de Planes</li>
@@ -44,7 +55,7 @@
 
   <div class="container main-container">
     <button id="back-btn" class="back-btn" onclick="showSection('welcome-screen')" style="display: none;" title="Volver al Menú Principal">🏠</button>
-    <!-- PANTALLA DE BIENVENIDA -->
+    <!-- PANTALLA DE BIENVENIDA NORMAL -->
     <section id="welcome-screen" class="content-section active">
       <div id="welcome-headers">
         <h1 style="font-size: 32px; color: #ff5b8a; margin-bottom: 5px;">¡Hola mi amor! 💖</h1>
@@ -99,6 +110,32 @@
         <button class="feature-card" onclick="showSection('secret')">
           <span class="f-icon">🔒</span>
           <span class="f-text">Secreto</span>
+        </button>
+        <button class="feature-card feature-comeback" onclick="toggleThemeMode()">
+          <span class="f-icon" style="color: #6366f1;">🌙</span>
+          <span class="f-text">Te extraño</span>
+        </button>
+      </div>
+    </section>
+
+    <!-- PANTALLA DE BIENVENIDA (TE EXTRAÑO) -->
+    <section id="te-extrano-screen" class="content-section" style="display: none;">
+      <div id="welcome-headers">
+        <h1 style="font-size: 32px; color: #e0e7ff; margin-bottom: 5px; font-family: 'Playfair Display', serif;">Te extraño... 🌙</h1>
+        <p class="subtitle" style="font-size: 16px; margin-bottom: 25px; color: #a5b4fc;">Una pequeña cápsula de todo lo que quedó.</p>
+      </div>
+      <div class="features-grid">
+        <button class="feature-card" onclick="showSection('comeback-reasons')">
+          <span class="f-icon" style="color: #818cf8;">💔</span>
+          <span class="f-text">Razones</span>
+        </button>
+        <button class="feature-card" onclick="showSection('comeback-letters')">
+          <span class="f-icon" style="color: #818cf8;">✉️</span>
+          <span class="f-text">Cartas</span>
+        </button>
+        <button class="feature-card" onclick="showSection('comeback-songs')">
+          <span class="f-icon" style="color: #818cf8;">🎧</span>
+          <span class="f-text">Soundtrack</span>
         </button>
       </div>
     </section>
@@ -223,6 +260,37 @@
         </div>
     </section>
 
+    <section id="comeback-reasons" class="content-section comeback-section" style="display: none;">
+        <div class="comeback-overlay"></div>
+        <div class="comeback-content">
+            <h2 class="comeback-title">💔 Lo que extraño de ti</h2>
+            <p class="comeback-subtitle">Cada día, un pequeño recordatorio.</p>
+            <div class="comeback-card">
+                <div id="comeback-text" class="comeback-text-inner">Cargando...</div>
+            </div>
+            <p id="comeback-day-display" class="comeback-day"></p>
+            <button id="btn-reveal-reason" class="action-btn" style="margin-top: 20px; background: rgba(99,102,241,0.2); border: 1px solid rgba(99,102,241,0.5); color: #fff;">Revelar otra razón</button>
+        </div>
+    </section>
+
+    <section id="comeback-letters" class="content-section comeback-section" style="display: none;">
+        <div class="comeback-overlay"></div>
+        <div class="comeback-content">
+            <h2 class="comeback-title">✉️ Cartas no enviadas</h2>
+            <p class="comeback-subtitle">Palabras que se quedaron en mi cabeza.</p>
+            <div id="unsent-letters-list" style="display: flex; flex-direction: column; gap: 15px;"></div>
+        </div>
+    </section>
+
+    <section id="comeback-songs" class="content-section comeback-section" style="display: none;">
+        <div class="comeback-overlay"></div>
+        <div class="comeback-content">
+            <h2 class="comeback-title">🎧 Soundtrack Nostálgico</h2>
+            <p class="comeback-subtitle">Canciones que huelen a ti.</p>
+            <div id="nostalgic-songs-list" style="display: flex; flex-direction: column; gap: 15px;"></div>
+        </div>
+    </section>
+
     <div class="footer">
       <span>Hecho con mucho amor<span class="heart-dot"> ❤</span></span>
       <span class="signature">– Abejandro</span>
@@ -235,16 +303,23 @@
   <!-- Music Floating Action Button (FAB) -->
   <div class="music-fab-container" id="music-fab">
     <div class="music-fab-controls">
-      <button id="fab-prev" title="Anterior">⏮</button>
-      <button id="fab-playpause" title="Play/Pause">▶️</button>
-      <button id="fab-next" title="Siguiente">⏭</button>
+      <button id="fab-prev" title="Anterior">
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M6 6h2v12H6zm3.5 6l8.5 6V6z"/></svg>
+      </button>
+      <button id="fab-playpause" title="Play/Pause">
+        <svg id="svg-play" viewBox="0 0 24 24" width="24" height="24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+        <svg id="svg-pause" viewBox="0 0 24 24" width="24" height="24" fill="currentColor" style="display: none;"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
+      </button>
+      <button id="fab-next" title="Siguiente">
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M6 18l8.5-6L6 6v12zM16 6v12h2V6h-2z"/></svg>
+      </button>
       <div class="volume-slider">
-        <span>🔉</span>
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>
         <input type="range" id="fab-volume" min="0" max="1" step="0.01" value="0.5">
       </div>
     </div>
     <div class="music-fab-trigger">
-      <span class="music-icon">🎵</span>
+      <svg class="music-icon" viewBox="0 0 24 24" width="24" height="24" fill="currentColor"><path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/></svg>
       <div class="music-waves">
         <span class="wave"></span>
         <span class="wave"></span>

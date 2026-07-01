@@ -280,7 +280,7 @@ textarea#diary-text::placeholder {
 }
 
 /* =========================================
-   7. SIDEBAR (MENÚ LATERAL)
+   7. BARRA LATERAL (SIDEBAR)
    ========================================= */
 .menu-btn {
   position: fixed;
@@ -297,7 +297,7 @@ textarea#diary-text::placeholder {
   font-size: 14px;
   box-shadow: 0 5px 15px rgba(0,0,0,0.1);
   cursor: pointer;
-  transition: transform 0.2s;
+  transition: transform 0.2s, background 0.2s;
 }
 .menu-btn:hover { transform: scale(1.05); background: rgba(255,255,255,0.9); }
 
@@ -306,7 +306,7 @@ textarea#diary-text::placeholder {
   left: -320px; top: 0;
   width: 290px;
   height: 100vh;
-  background: rgba(255, 255, 255, 0.65);
+  background: rgba(255, 255, 255, 0.85);
   backdrop-filter: blur(25px);
   -webkit-backdrop-filter: blur(25px);
   border-right: 1px solid rgba(255, 255, 255, 0.6);
@@ -323,38 +323,78 @@ textarea#diary-text::placeholder {
 
 .sidebar-header {
   display: flex;
-  justify-content: space-between;
+  flex-direction: column;
   align-items: center;
-  margin-bottom: 35px;
-  color: #ff5b8a;
-  font-weight: 800;
-  font-size: 18px;
+  justify-content: center;
+  margin-bottom: 30px;
+  position: relative;
+  border-bottom: 1px solid rgba(0,0,0,0.05);
+  padding-bottom: 20px;
 }
-
-.nav-links { list-style: none; text-align: left; padding: 0; }
-
-.nav-links li {
-  padding: 14px 10px;
-  border-bottom: 1px solid #f5f5f5;
-  cursor: pointer;
-  transition: all 0.2s;
-  color: #666;
-  font-size: 16px;
-  font-weight: 500;
+.profile-pic {
+  width: 60px;
+  height: 60px;
+  background: linear-gradient(135deg, #ffcde0, #fce2e1);
+  border-radius: 50%;
   display: flex;
   align-items: center;
+  justify-content: center;
+  font-size: 30px;
+  margin-bottom: 10px;
+  box-shadow: 0 5px 15px rgba(255, 91, 138, 0.2);
 }
 
-.nav-links li:hover {
+.sidebar-header h3 {
   color: #ff5b8a;
-  padding-left: 15px;
-  background: rgba(255, 91, 138, 0.03);
-  border-radius: 8px;
+  font-size: 20px;
+  margin: 0;
 }
 
 .close-btn {
   background: none; border: none; font-size: 28px;
-  cursor: pointer; color: #aaa; box-shadow: none; padding: 0;
+  cursor: pointer; color: #999;
+  transition: color 0.2s, transform 0.2s;
+  position: absolute;
+  top: -15px;
+  right: -10px;
+}
+.close-btn:hover { color: #ff5b8a; transform: rotate(90deg); }
+
+.nav-links {
+  list-style: none; padding: 0; margin: 0;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.nav-links li {
+  padding: 12px 15px;
+  cursor: pointer;
+  border-radius: 12px;
+  transition: all 0.2s ease;
+  color: #555;
+  font-weight: 600;
+  font-size: 14.5px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.nav-links li:hover {
+  background: rgba(255, 91, 138, 0.08);
+  color: #ff5b8a;
+  transform: translateX(5px);
+}
+
+.nav-comeback {
+  background: rgba(99, 102, 241, 0.05);
+  color: #6366f1 !important;
+  border: 1px solid rgba(99, 102, 241, 0.2);
+}
+.nav-comeback:hover {
+  background: rgba(99, 102, 241, 0.1) !important;
+  transform: translateX(5px) scale(1.02) !important;
 }
 
 /* =========================================
@@ -622,9 +662,165 @@ textarea#diary-text::placeholder {
   background: rgba(255, 255, 255, 0.9);
 }
 
+.feature-comeback {
+  background: rgba(99, 102, 241, 0.05);
+  border-color: rgba(99, 102, 241, 0.2);
+}
+.feature-comeback:hover {
+  background: rgba(99, 102, 241, 0.15);
+  border-color: rgba(99, 102, 241, 0.4);
+  box-shadow: 0 15px 25px rgba(99, 102, 241, 0.15);
+  color: #6366f1;
+}
+
+/* =========================================
+   10.5. SECCIÓN VOLVER (MELANCÓLICA)
+   ========================================= */
+.comeback-section {
+  position: relative;
+  overflow: hidden;
+  border-radius: 30px;
+  background: transparent;
+  color: #fff;
+  text-align: center;
+  padding: 40px 20px;
+  min-height: 400px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.comeback-overlay {
+  position: absolute;
+  top: -100px; left: -100px; right: -100px; bottom: -100px;
+  background: linear-gradient(135deg, #1e1b4b, #312e81, #4c1d95);
+  filter: blur(20px);
+  z-index: 0;
+  opacity: 0.9;
+}
+
+.comeback-content {
+  position: relative;
+  z-index: 1;
+}
+
+.comeback-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 28px;
+  color: #e0e7ff;
+  margin-bottom: 10px;
+  text-shadow: 0 2px 10px rgba(0,0,0,0.5);
+}
+
+.comeback-subtitle {
+  font-size: 14px;
+  color: #a5b4fc;
+  margin-bottom: 30px;
+  font-style: italic;
+}
+
+.comeback-card {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(15px);
+  -webkit-backdrop-filter: blur(15px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 20px;
+  padding: 30px 20px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+  margin-bottom: 20px;
+}
+
+.comeback-text-inner {
+  font-family: 'Quicksand', sans-serif;
+  font-size: 18px;
+  line-height: 1.5;
+  color: #f8fafc;
+  font-weight: 500;
+}
+
+.comeback-day {
+  font-size: 12px;
+  color: #818cf8;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
 /* =========================================
    11. MEDIA QUERIES (ADAPTABILIDAD MÓVIL)
    ========================================= */
+@media (max-width: 600px) {
+  .features-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+  .feature-card { padding: 12px 10px; min-height: 85px; }
+  
+  .sidebar { width: 260px; left: -280px; padding: 20px 15px; }
+  .menu-btn { top: 15px; left: 15px; padding: 10px 15px; font-size: 13px; }
+  #theme-toggle { left: 100px; }
+  
+  .container { border-radius: 30px; padding: 24px 16px 28px; }
+  h1 { font-size: 24px; }
+  .subtitle { font-size: 13px; }
+}
+
+/* =========================================
+   13. TEMA MELANCÓLICO (LADO B)
+   ========================================= */
+body.theme-melancholy {
+  background: linear-gradient(135deg, #0f172a, #1e1b4b, #000000);
+}
+body.theme-melancholy .container {
+  background: rgba(15, 23, 42, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+}
+body.theme-melancholy .sidebar {
+  background: rgba(15, 23, 42, 0.85);
+  border-right: 1px solid rgba(255, 255, 255, 0.1);
+}
+body.theme-melancholy .feature-card {
+  background: rgba(30, 41, 59, 0.6);
+  border-color: rgba(255, 255, 255, 0.1);
+  color: #e2e8f0;
+}
+body.theme-melancholy .feature-card:hover {
+  background: rgba(51, 65, 85, 0.8);
+  border-color: rgba(99, 102, 241, 0.5);
+}
+body.theme-melancholy h1, body.theme-melancholy h2, body.theme-melancholy h3 {
+  color: #e0e7ff;
+}
+body.theme-melancholy .subtitle, body.theme-melancholy p {
+  color: #94a3b8;
+}
+body.theme-melancholy .menu-btn {
+  background: rgba(30, 41, 59, 0.8);
+  border-color: rgba(255, 255, 255, 0.2);
+  color: #a5b4fc;
+}
+body.theme-melancholy .nav-links li {
+  color: #94a3b8;
+}
+body.theme-melancholy .nav-links li:hover {
+  background: rgba(99, 102, 241, 0.2);
+  color: #e0e7ff;
+}
+
+.letter-item, .song-item {
+  background: rgba(255,255,255,0.05);
+  padding: 15px;
+  border-radius: 12px;
+  text-align: left;
+  border: 1px solid rgba(255,255,255,0.1);
+}
+.letter-title, .song-title {
+  font-weight: bold; color: #c7d2fe; margin-bottom: 5px;
+}
+.letter-text, .song-story {
+  font-size: 14px; color: #94a3b8; line-height: 1.5;
+}
+.song-artist {
+  font-size: 12px; color: #818cf8; margin-bottom: 5px; font-style: italic;
+}
+
 @media (max-width: 768px) {
   .container {
     max-width: 90%;
@@ -670,7 +866,72 @@ textarea#diary-text::placeholder {
 }
 
 /* =========================================
-   11. MUSIC FLOATING ACTION BUTTON (FAB)
+   11. ANIMACIÓN DE ENTRADA
+   ========================================= */
+#intro-animation {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100vh;
+  background: linear-gradient(135deg, #ffcde0, #fce2e1, #e2d2fd);
+  background-size: 200% 200%;
+  animation: introGrad 4s ease infinite;
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: opacity 1.5s cubic-bezier(0.25, 0.8, 0.25, 1), visibility 1.5s;
+}
+
+#intro-animation.hidden {
+  opacity: 0;
+  visibility: hidden;
+}
+
+.intro-content {
+  text-align: center;
+  animation: floatIn 1.5s ease-out forwards;
+}
+
+.intro-title {
+  font-family: 'Quicksand', sans-serif;
+  font-size: 32px;
+  color: #ff5b8a;
+  margin-bottom: 10px;
+  text-shadow: 0 5px 15px rgba(255, 255, 255, 0.8);
+}
+
+.intro-text {
+  font-family: 'Nunito', sans-serif;
+  font-size: 18px;
+  color: #666;
+  margin-bottom: 25px;
+}
+
+.intro-heart {
+  font-size: 60px;
+  animation: heartbeat 1.2s infinite cubic-bezier(0.215, 0.61, 0.355, 1);
+  filter: drop-shadow(0 10px 15px rgba(255, 91, 138, 0.4));
+}
+
+@keyframes introGrad {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+@keyframes heartbeat {
+  0% { transform: scale(1); }
+  15% { transform: scale(1.3); }
+  30% { transform: scale(1); }
+  45% { transform: scale(1.15); }
+  60% { transform: scale(1); }
+  100% { transform: scale(1); }
+}
+
+/* =========================================
+   12. MUSIC FLOATING ACTION BUTTON (FAB)
    ========================================= */
 .music-fab-container {
   position: fixed;
