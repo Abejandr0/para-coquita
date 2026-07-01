@@ -108,11 +108,9 @@ function showSection(targetId) {
 let isMelancholy = false;
 
 function goBackHome() {
-    if (isMelancholy) {
-        showSection('te-extrano-screen');
-    } else {
-        showSection('welcome-screen');
-    }
+    isMelancholy = false;
+    document.body.classList.remove('theme-melancholy');
+    showSection('welcome-screen');
 }
 
 function toggleThemeMode() {
