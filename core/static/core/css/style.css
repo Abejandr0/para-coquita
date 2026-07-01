@@ -785,6 +785,9 @@ body.theme-melancholy .container {
   border: 1px solid rgba(255, 255, 255, 0.05);
   box-shadow: 0 10px 40px rgba(0, 0, 0, 0.8);
 }
+body.theme-melancholy .container::before {
+  display: none;
+}
 body.theme-melancholy .sidebar {
   background: rgba(15, 23, 42, 0.85);
   border-right: 1px solid rgba(255, 255, 255, 0.1);
@@ -803,7 +806,6 @@ body.theme-melancholy h1, body.theme-melancholy h2, body.theme-melancholy h3 {
 }
 body.theme-melancholy .subtitle, body.theme-melancholy p {
   color: #94a3b8;
-  font-family: 'Courier New', Courier, monospace;
 }
 body.theme-melancholy .menu-btn {
   background: rgba(30, 41, 59, 0.8);
@@ -827,11 +829,9 @@ body.theme-melancholy .nav-links li:hover {
   text-align: left;
   border: 1px solid rgba(255,255,255,0.08);
   border-left: 3px solid #6366f1;
-  font-family: 'Courier New', Courier, monospace;
 }
 .letter-title, .song-title {
   font-weight: bold; color: #c7d2fe; margin-bottom: 5px;
-  font-family: 'Playfair Display', serif;
 }
 .letter-text, .song-story {
   font-size: 14px; color: #94a3b8; line-height: 1.5;

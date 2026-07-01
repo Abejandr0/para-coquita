@@ -94,9 +94,13 @@ function showSection(targetId) {
     const menuBtn = document.getElementById('menu-btn');
     const themeBtn = document.getElementById('theme-toggle');
     
-    if(targetId === 'welcome-screen' || targetId === 'te-extrano-screen') {
+    if(targetId === 'welcome-screen') {
         if(backBtn) backBtn.style.display = 'none';
-        if(menuBtn) menuBtn.style.display = 'none';
+        if(menuBtn) menuBtn.style.display = 'block';
+        if(themeBtn) themeBtn.style.display = 'block';
+    } else if(targetId === 'te-extrano-screen') {
+        if(backBtn) backBtn.style.display = 'none';
+        if(menuBtn) menuBtn.style.display = 'block';
         if(themeBtn) themeBtn.style.display = 'none';
     } else {
         if(backBtn) backBtn.style.display = 'flex';
@@ -403,6 +407,8 @@ function renderComeback() {
     if (reasonToShow) {
         textEl.innerHTML = reasonToShow.text;
         dayEl.innerHTML = `Día ${reasonToShow.day}`;
+        currentComebackReasonIndex = db.comebackReasons.findIndex(r => r.day === reasonToShow.day);
+        if(currentComebackReasonIndex === -1) currentComebackReasonIndex = 0;
     }
 }
 
@@ -432,165 +438,7 @@ function renderComebackLists() {
 /* =========================================
    6. CONSTELACIONES (CANVAS)
    ========================================= */
-function initConstellations(canvasId, tooltipId, starsData, connectLines, starColor) {
-    const canvas = document.getElementById(canvasId);
-    if(!canvas) return;
-    const ctx = canvas.getContext('2d');
-    const tooltip = document.getElementById(tooltipId);
-    
-    let width, height;
-    function resize() {
-        width = canvas.parentElement.clientWidth || window.innerWidth;
-        height = canvas.parentElement.clientHeight || window.innerHeight;
-        canvas.width = width;
-        canvas.height = height;
-    }
-    window.addEventListener('resize', resize);
-    resize();
-
-    // Fondo de estrellas (simulando Vía Láctea sutil)
-    const bgStars = Array.from({length: 400}, () => ({
-        x: Math.random(), y: Math.random(),
-        s: Math.random() * (connectLines ? 1.5 : 0.8), // Lado triste estrellas más débiles
-        a: Math.random() * Math.PI * 2,
-        speed: 0.005 + Math.random() * 0.01,
-        isMilkyWay: Math.random() > 0.8
-    }));
-
-    const mainStars = starsData.map((st, i) => ({
-        ...st,
-        x: 0.2 + (i * 0.3) + Math.random() * 0.1,
-        y: 0.3 + Math.random() * 0.4,
-        radius: 4 + Math.random() * 3
-    }));
-
-    // Pensamientos melancólicos
-    const sadThoughts = ["Aún te pienso...", "El tiempo se detuvo.", "Noches largas.", "El cielo está vacío.", "Silencio.", "Ojalá estuvieras."];
-    let activeThoughts = [];
-
-    function draw() {
-        ctx.clearRect(0, 0, width, height);
-        
-        // Dibujar estrellas de fondo
-        bgStars.forEach(bs => {
-            bs.a += bs.speed;
-            if(connectLines) {
-                ctx.fillStyle = starColor;
-                ctx.globalAlpha = bs.isMilkyWay ? 0.6 : (0.2 + 0.5 * Math.abs(Math.sin(bs.a)));
-            } else {
-                ctx.fillStyle = "#4c1d95"; // Estrellas moradas/oscuras en lado triste
-                ctx.globalAlpha = 0.1 + 0.3 * Math.abs(Math.sin(bs.a));
-            }
-            ctx.beginPath();
-            ctx.arc(bs.x * width, bs.y * height, bs.s, 0, Math.PI * 2);
-            ctx.fill();
-        });
-        
-        ctx.globalAlpha = 1;
-
-        // Luna en el lado triste
-        if(!connectLines) {
-            ctx.fillStyle = "rgba(255, 255, 255, 0.8)";
-            ctx.shadowBlur = 20;
-            ctx.shadowColor = "#e0e7ff";
-            ctx.beginPath();
-            ctx.arc(width * 0.8, height * 0.2, 30, 0, Math.PI * 2);
-            ctx.fill();
-            // Sombra de la luna menguante
-            ctx.fillStyle = "#000";
-            ctx.shadowBlur = 0;
-            ctx.beginPath();
-            ctx.arc(width * 0.78, height * 0.18, 28, 0, Math.PI * 2);
-            ctx.fill();
-        }
-
-        // Dibujar líneas si se solicita
-        if(connectLines && mainStars.length > 1) {
-            ctx.strokeStyle = "rgba(255, 255, 255, 0.4)";
-            ctx.lineWidth = 1;
-            ctx.beginPath();
-            ctx.moveTo(mainStars[0].x * width, mainStars[0].y * height);
-            for(let i=1; i<mainStars.length; i++) {
-                ctx.lineTo(mainStars[i].x * width, mainStars[i].y * height);
-            }
-            ctx.stroke();
-        }
-
-        // Dibujar estrellas principales
-        mainStars.forEach(ms => {
-            ctx.shadowBlur = connectLines ? 20 : 10;
-            ctx.shadowColor = starColor;
-            ctx.fillStyle = connectLines ? "#fff" : "#cbd5e1";
-            ctx.beginPath();
-            ctx.arc(ms.x * width, ms.y * height, ms.radius, 0, Math.PI * 2);
-            ctx.fill();
-            ctx.shadowBlur = 0;
-            
-            // Halo sutil
-            ctx.fillStyle = connectLines ? "rgba(255,255,255,0.15)" : "rgba(255,255,255,0.05)";
-            ctx.beginPath();
-            ctx.arc(ms.x * width, ms.y * height, ms.radius * 2.5, 0, Math.PI * 2);
-            ctx.fill();
-        });
-
-        // Dibujar pensamientos activos (solo lado triste)
-        if(!connectLines) {
-            for(let i=activeThoughts.length-1; i>=0; i--) {
-                let t = activeThoughts[i];
-                t.life -= 0.01;
-                if(t.life <= 0) {
-                    activeThoughts.splice(i, 1);
-                    continue;
-                }
-                ctx.fillStyle = `rgba(165, 180, 252, ${t.life})`;
-                ctx.font = "14px 'Courier New'";
-                ctx.fillText(t.text, t.x, t.y);
-                t.y -= 0.5; // Flota hacia arriba
-            }
-        }
-
-        requestAnimationFrame(draw);
-    }
-    draw();
-
-    // Interactividad
-    canvas.addEventListener('click', (e) => {
-        if(!connectLines) {
-            const rect = canvas.getBoundingClientRect();
-            activeThoughts.push({
-                x: e.clientX - rect.left,
-                y: e.clientY - rect.top,
-                text: sadThoughts[Math.floor(Math.random() * sadThoughts.length)],
-                life: 1.0
-            });
-        }
-    });
-
-    canvas.addEventListener('mousemove', (e) => {
-        const rect = canvas.getBoundingClientRect();
-        const mouseX = e.clientX - rect.left;
-        const mouseY = e.clientY - rect.top;
-        
-        let hovered = false;
-        mainStars.forEach(ms => {
-            const dx = mouseX - ms.x * width;
-            const dy = mouseY - ms.y * height;
-            if(Math.sqrt(dx*dx + dy*dy) < ms.radius * 4) {
-                tooltip.style.display = 'block';
-                tooltip.style.left = (ms.x * width) + 'px';
-                tooltip.style.top = (ms.y * height - 10) + 'px';
-                tooltip.innerHTML = `<strong>${ms.date}</strong><br><span style="font-size:12px;">${ms.title}</span>`;
-                hovered = true;
-                canvas.style.cursor = 'pointer';
-            }
-        });
-        
-        if(!hovered) {
-            tooltip.style.display = 'none';
-            canvas.style.cursor = 'default';
-        }
-    });
-}
+// Constelaciones removidas a favor de iframes de VirtualSky
 
 /* =========================================
    7. INICIALIZACIÓN
@@ -613,30 +461,34 @@ window.onload = () => {
     renderComeback();
     renderComebackLists();
     
-    // Iniciar Constelaciones
-    initConstellations("canvas-happy", "tooltip-happy", [
-        {date: "27 de mayo de 2025", title: "Empezamos a hablar"},
-        {date: "25 de julio de 2025", title: "Nos hicimos novios"}
-    ], true, "#ffb6c1");
-    
-    initConstellations("canvas-sad", "tooltip-sad", [
-        {date: "18 de abril de 2026", title: "Nos separamos"}
-    ], false, "#a5b4fc");
-
     // Listeners
     document.getElementById("next-reason").onclick = showRandomReason;
     
-    // New listener for random comeback reason
-    const btnReveal = document.getElementById("btn-reveal-reason");
-    if(btnReveal) {
-        btnReveal.onclick = () => {
-            if(db.comebackReasons && db.comebackReasons.length > 0) {
-                const randomReason = db.comebackReasons[Math.floor(Math.random() * db.comebackReasons.length)];
-                document.getElementById("comeback-text").innerHTML = randomReason.text;
-                document.getElementById("comeback-day-display").innerHTML = `Día ${randomReason.day}`;
-            }
-        };
+    let currentComebackReasonIndex = 0;
+    
+    function showComebackReason(index) {
+        if(db.comebackReasons && db.comebackReasons.length > 0) {
+            if(index < 0) index = 0;
+            if(index >= db.comebackReasons.length) index = db.comebackReasons.length - 1;
+            currentComebackReasonIndex = index;
+            const reason = db.comebackReasons[index];
+            document.getElementById("comeback-text").innerHTML = reason.text;
+            document.getElementById("comeback-day-display").innerHTML = `Día ${reason.day}`;
+        }
     }
+
+    const btnNext = document.getElementById("btn-next-reason");
+    const btnPrev = document.getElementById("btn-prev-reason");
+    
+    if(btnNext) {
+        btnNext.onclick = () => showComebackReason(currentComebackReasonIndex + 1);
+    }
+    if(btnPrev) {
+        btnPrev.onclick = () => showComebackReason(currentComebackReasonIndex - 1);
+    }
+    
+    // Al abrir el modal, podríamos cargar la primera si no se ha cargado.
+    // Esto se puede llamar justo después de cargar los datos.
 
     // Modal listeners
     document.getElementById("start-challenge-btn").onclick = startHomeChallenge;

@@ -149,6 +149,10 @@
           <span class="f-icon" style="color: #818cf8;">✨</span>
           <span class="f-text">Cielo Nocturno</span>
         </button>
+        <button class="feature-card" onclick="goBackHome()">
+          <span class="f-icon" style="color: #fca5a5;">☀️</span>
+          <span class="f-text">Volver a la luz</span>
+        </button>
       </div>
       
       <div style="margin-top: 30px; text-align: center;">
@@ -261,10 +265,9 @@
         <div id="diary-entries" class="scroll-container"></div>
     </section>
 
-    <section id="constellations-happy" class="content-section" style="display: none;">
-        <h2 style="position: absolute; top: 20px; left: 0; right: 0; text-align: center; color: white; z-index: 10; text-shadow: 0 2px 4px rgba(0,0,0,0.8);">✨ Nuestro Cielo</h2>
-        <canvas id="canvas-happy" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: #000; border-radius: 20px;"></canvas>
-        <div id="tooltip-happy" style="position: absolute; display: none; background: rgba(0,0,0,0.8); color: white; padding: 10px; border-radius: 8px; z-index: 20; border: 1px solid #ff5b8a; transform: translate(-50%, -100%); margin-top: -15px;"></div>
+    <section id="constellations-happy" class="content-section" style="display: none; padding: 0; overflow: hidden; border-radius: 40px;">
+        <h2 style="position: absolute; top: 20px; left: 0; right: 0; text-align: center; color: white; z-index: 10; text-shadow: 0 2px 4px rgba(0,0,0,0.8);">✨ Cielo del 25 de julio de 2025</h2>
+        <iframe width="100%" height="100%" frameborder="0" scrolling="no" marginheight="0" marginwidth="0" src="https://virtualsky.lco.global/embed/index.html?longitude=-77.2811&latitude=1.2136&projection=stereo&constellations=true&constellationlabels=true&meteorshowers=true&date=2025-07-25T20:00:00&showdate=false&showposition=false&keyboard=false&mouse=true" style="position: absolute; top: 0; left: 0; border-radius: 40px;"></iframe>
     </section>
 
     <section id="letters" class="content-section" style="display: none;">
@@ -293,7 +296,10 @@
                 <div id="comeback-text" class="comeback-text-inner">Cargando...</div>
             </div>
             <p id="comeback-day-display" class="comeback-day"></p>
-            <button id="btn-reveal-reason" class="action-btn" style="margin-top: 20px; background: rgba(99,102,241,0.2); border: 1px solid rgba(99,102,241,0.5); color: #fff;">Revelar otra razón</button>
+            <div style="display: flex; gap: 10px; justify-content: center; margin-top: 20px;">
+                <button id="btn-prev-reason" class="action-btn" style="background: rgba(99,102,241,0.2); border: 1px solid rgba(99,102,241,0.5); color: #fff;">Día Anterior</button>
+                <button id="btn-next-reason" class="action-btn" style="background: rgba(99,102,241,0.2); border: 1px solid rgba(99,102,241,0.5); color: #fff;">Día Siguiente</button>
+            </div>
         </div>
     </section>
 
@@ -330,11 +336,9 @@
         </div>
     </section>
 
-    <section id="constellations-sad" class="content-section comeback-section" style="display: none;">
-        <div class="comeback-overlay"></div>
-        <h2 style="position: absolute; top: 20px; left: 0; right: 0; text-align: center; color: white; z-index: 10; text-shadow: 0 2px 4px rgba(0,0,0,0.8);">✨ El Cielo se Nubló</h2>
-        <canvas id="canvas-sad" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: #000; border-radius: 20px;"></canvas>
-        <div id="tooltip-sad" style="position: absolute; display: none; background: rgba(0,0,0,0.8); color: white; padding: 10px; border-radius: 8px; z-index: 20; border: 1px solid #818cf8; transform: translate(-50%, -100%); margin-top: -15px;"></div>
+    <section id="constellations-sad" class="content-section comeback-section" style="display: none; padding: 0; overflow: hidden; border-radius: 40px;">
+        <h2 style="position: absolute; top: 20px; left: 0; right: 0; text-align: center; color: white; z-index: 10; text-shadow: 0 2px 4px rgba(0,0,0,0.8);">✨ Cielo del 18 de abril de 2026</h2>
+        <iframe width="100%" height="100%" frameborder="0" scrolling="no" marginheight="0" marginwidth="0" src="https://virtualsky.lco.global/embed/index.html?longitude=-77.2811&latitude=1.2136&projection=stereo&constellations=true&constellationlabels=true&meteorshowers=true&date=2026-04-18T20:00:00&showdate=false&showposition=false&keyboard=false&mouse=true" style="position: absolute; top: 0; left: 0; border-radius: 40px;"></iframe>
     </section>
 
     <div class="footer">
