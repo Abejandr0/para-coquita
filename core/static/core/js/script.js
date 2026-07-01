@@ -41,9 +41,8 @@ function createFloatingHearts() {
 }
 
 // ⏱️ Contador Detallado
-function updateCounter() {
+function updateSpecificCounter(startDate, elId, prefixMain, prefixDetail) {
     const now = new Date();
-    const startDate = db.config.startDate;
     let diffMs = now - startDate;
     
     let date1 = new Date(startDate.getTime());
@@ -70,12 +69,66 @@ function updateCounter() {
     const minutes = Math.floor(seconds / 60);
     seconds -= minutes * 60;
 
-    const mainText = `Llevamos siendo novios: ${years} años, ${months} meses y ${days} días.`;
-    const detailText = `(Total: ${totalDays} días, ${hours} horas, ${minutes} minutos y ${seconds} segundos.)`;
+    let mainText = `${years} años, ${months} meses y ${days} días`;
+    // Si es tiempo separado, tal vez no queremos "llevamos siendo novios"
+    if (years === 0 && months === 0) {
+        mainText = `${days} días`;
+    } else if (years === 0) {
+        mainText = `${months} meses y ${days} días`;
+    }
     
-    const counterElement = document.getElementById("counter-text");
+    const detailText = `(${totalDays} días, ${hours} horas, ${minutes} minutos, ${seconds} segundos)`;
+    
+    const counterElement = document.getElementById(elId);
     if(counterElement) {
-        counterElement.innerHTML = `<strong>${mainText}</strong><br/> <span style="font-size: 11px; opacity: 0.8; margin-top:4px; display:block;">${detailText}</span>`;
+        counterElement.innerHTML = `<span style="font-size: 20px;">${mainText}</span><br/> <span style="font-size: 13px; opacity: 0.8; margin-top:4px; display:block;">${detailText}</span>`;
+    }
+}
+
+// ⏱️ Contador Detallado
+function updateCounter() {
+    updateSpecificCounter(db.config.startDate, "happy-counter", "Llevamos siendo novios:", "Total:");
+    
+    // Asumiendo 18 de abril de 2026
+    const sepDate = new Date("2026-04-18T00:00:00");
+    if(new Date() > sepDate) {
+        updateSpecificCounter(sepDate, "sad-counter", "Tiempo separados:", "Total:");
+    } else {
+        const sadC = document.getElementById("sad-counter");
+        if(sadC) sadC.innerHTML = "0 días";
+    }
+}
+
+// 🌌 Funciones para Constelaciones
+let isFirstHappyDate = true;
+function toggleHappyStars() {
+    const iframe1 = document.getElementById("happy-iframe-1");
+    const iframe2 = document.getElementById("happy-iframe-2");
+    const title = document.getElementById("happy-stars-title");
+    const desc = document.getElementById("happy-stars-desc");
+    
+    if(!iframe1 || !iframe2) return;
+    
+    isFirstHappyDate = !isFirstHappyDate;
+    if(isFirstHappyDate) {
+        iframe1.style.display = "block";
+        iframe2.style.display = "none";
+        title.innerHTML = "✨ 27 de mayo de 2025";
+        desc.innerHTML = "El cielo bajo el cual empezamos a hablar.";
+    } else {
+        iframe1.style.display = "none";
+        iframe2.style.display = "block";
+        title.innerHTML = "✨ 25 de julio de 2025";
+        desc.innerHTML = "El cielo de la noche en que nos hicimos novios.";
+    }
+}
+
+function fullscreenStars(sectionId) {
+    const el = document.getElementById(sectionId);
+    if(el) {
+        if(el.requestFullscreen) el.requestFullscreen();
+        else if(el.webkitRequestFullscreen) el.webkitRequestFullscreen();
+        else if(el.msRequestFullscreen) el.msRequestFullscreen();
     }
 }
 
