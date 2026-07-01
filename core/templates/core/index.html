@@ -43,9 +43,67 @@
   </nav>
 
   <div class="container main-container">
-    
-    <section id="home" class="content-section active">
-      
+    <button id="back-btn" class="back-btn" onclick="showSection('welcome-screen')" style="display: none;" title="Volver al Menú Principal">🏠</button>
+    <!-- PANTALLA DE BIENVENIDA -->
+    <section id="welcome-screen" class="content-section active">
+      <div id="welcome-headers">
+        <h1 style="font-size: 32px; color: #ff5b8a; margin-bottom: 5px;">¡Hola mi amor! 💖</h1>
+        <p class="subtitle" style="font-size: 16px; margin-bottom: 25px;">Bienvenida a nuestro pequeño mundo.</p>
+      </div>
+
+      <div class="features-grid">
+        <button class="feature-card" onclick="showSection('home')">
+          <span class="f-icon">💌</span>
+          <span class="f-text">Razones</span>
+        </button>
+        <button class="feature-card" onclick="showSection('quiz')">
+          <span class="f-icon">💕</span>
+          <span class="f-text">Test</span>
+        </button>
+        <button class="feature-card" onclick="showSection('roulette')">
+          <span class="f-icon">🎡</span>
+          <span class="f-text">Ruleta</span>
+        </button>
+        <button class="feature-card" onclick="showSection('challenge')">
+          <span class="f-icon">🎲</span>
+          <span class="f-text">Retos</span>
+        </button>
+        <button class="feature-card" onclick="showSection('mystery')">
+          <span class="f-icon">🎁</span>
+          <span class="f-text">Sorpresas</span>
+        </button>
+        <button class="feature-card" onclick="showSection('gallery')">
+          <span class="f-icon">🖼️</span>
+          <span class="f-text">Historia</span>
+        </button>
+        <button class="feature-card" onclick="showSection('playlist')">
+          <span class="f-icon">🎶</span>
+          <span class="f-text">Soundtrack</span>
+        </button>
+        <button class="feature-card" onclick="showSection('map')">
+          <span class="f-icon">🗺️</span>
+          <span class="f-text">Mapa</span>
+        </button>
+        <button class="feature-card" onclick="showSection('calendar')">
+          <span class="f-icon">📆</span>
+          <span class="f-text">Citas</span>
+        </button>
+        <button class="feature-card" onclick="showSection('diary')">
+          <span class="f-icon">📖</span>
+          <span class="f-text">Diario</span>
+        </button>
+        <button class="feature-card" onclick="showSection('letters')">
+          <span class="f-icon">✉️</span>
+          <span class="f-text">Cartas</span>
+        </button>
+        <button class="feature-card" onclick="showSection('secret')">
+          <span class="f-icon">🔒</span>
+          <span class="f-text">Secreto</span>
+        </button>
+      </div>
+    </section>
+
+    <section id="home" class="content-section" style="display: none;">
       <div id="home-headers">
         <h1>Para Coquita 💗</h1>
         <h2>Razones por las que te amo</h2>

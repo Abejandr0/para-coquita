@@ -83,12 +83,28 @@ function updateCounter() {
    3. NAVEGACIÓN Y HOME
    ========================================= */
 
+function showSection(targetId) {
+    const sections = document.querySelectorAll('.content-section');
+    sections.forEach(s => s.style.display = 'none');
+    const targetSection = document.getElementById(targetId);
+    if(targetSection) targetSection.style.display = 'block';
+
+    // Show or hide back button based on whether we are on welcome screen
+    const backBtn = document.getElementById('back-btn');
+    if(backBtn) {
+        if(targetId === 'welcome-screen') {
+            backBtn.style.display = 'none';
+        } else {
+            backBtn.style.display = 'flex';
+        }
+    }
+}
+
 function setupNavigation() {
     const menuBtn = document.getElementById('menu-btn');
     const sidebar = document.getElementById('sidebar');
     const closeBtn = document.getElementById('close-menu');
     const links = document.querySelectorAll('.nav-links li');
-    const sections = document.querySelectorAll('.content-section');
 
     const toggleMenu = () => sidebar.classList.toggle('open');
     menuBtn.addEventListener('click', toggleMenu);
@@ -97,9 +113,7 @@ function setupNavigation() {
     links.forEach(link => {
         link.addEventListener('click', () => {
             const target = link.getAttribute('data-target');
-            sections.forEach(s => s.style.display = 'none');
-            const targetSection = document.getElementById(target);
-            if(targetSection) targetSection.style.display = 'block';
+            showSection(target);
             toggleMenu();
         });
     });
