@@ -184,12 +184,16 @@ let isMelancholy = false;
 function goBackHome() {
     isMelancholy = false;
     document.body.classList.remove('theme-melancholy');
+    const meta = document.getElementById('theme-color-meta');
+    if(meta) meta.setAttribute("content", "#ffcde0");
     showSection('welcome-screen');
 }
 
 function enterMelancholyMode() {
     isMelancholy = true;
     document.body.classList.add('theme-melancholy');
+    const meta = document.getElementById('theme-color-meta');
+    if(meta) meta.setAttribute("content", "#0f172a");
     showSection('te-extrano-screen');
 }
 

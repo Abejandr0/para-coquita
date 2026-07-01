@@ -602,12 +602,37 @@ textarea#diary-text::placeholder {
   padding: 0 !important;
 }
 
+.theme-btn {
+  left: 130px;
+}
+
+.whatsapp-btn {
+  background: linear-gradient(135deg, #25d366, #128c7e);
+  color: white !important;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 12px 25px;
+  border-radius: 30px;
+  font-weight: bold;
+  font-size: 16px;
+  box-shadow: 0 4px 15px rgba(37, 211, 102, 0.4);
+  transition: transform 0.2s, box-shadow 0.2s;
+  border: none;
+}
+.whatsapp-btn:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 20px rgba(37, 211, 102, 0.6);
+}
+
 /* =========================================
-   10. PANTALLA DE BIENVENIDA Y GRID
+   12. ESTILOS DE DESARROLLO / FIN
    ========================================= */
 .features-grid {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: repeat(3, 1fr);
   gap: 15px;
   margin-top: 15px;
 }
@@ -769,7 +794,8 @@ textarea#diary-text::placeholder {
   
   .sidebar { width: 260px; left: -280px; padding: 20px 15px; }
   .menu-btn { top: 15px; left: 15px; padding: 10px 15px; font-size: 13px; }
-  #theme-toggle { left: 100px; }
+  .theme-btn { left: 110px !important; }
+  #theme-toggle { left: 110px; }
   
   .container { border-radius: 30px; padding: 24px 16px 28px; }
   h1 { font-size: 24px; }
@@ -875,7 +901,7 @@ body.theme-melancholy .nav-links li:hover {
     gap: 12px; 
   }
   
-  button {
+  .actions button {
     width: 100%;
     padding: 14px;
     font-size: 15px;
