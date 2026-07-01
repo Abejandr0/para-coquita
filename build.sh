@@ -9,3 +9,4 @@ python populate_db.py
 python populate_extended.py
 python populate_te_extrano.py
 python populate_te_extrano_2.py
+python update_reasons_and_playlist.py

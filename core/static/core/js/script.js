@@ -336,8 +336,20 @@ function resetMysteryBox() { document.getElementById("mystery-box-icon").style.d
 
 // Renderizadores
 function renderTimeline() { document.getElementById("timeline-container").innerHTML = db.timeline.map(t => `<div class="timeline-item"><div style="font-size:11px; color:#999; font-weight:bold;">${t.date}</div><strong style="color:#ff5b8a;">${t.title}</strong><div style="background:#fff0f6; padding:10px; border-radius:10px; margin-top:5px; font-size:14px;">${t.desc}</div></div>`).join(''); }
-function renderPlaylist() { document.getElementById("playlist-list").innerHTML = db.playlist.map((s,i) => `<li onclick="showSong(${i})"><span>🎵 ${s.title}</span> <small style="color:#888;">- ${s.artist}</small></li>`).join(''); }
-function showSong(i) { document.getElementById("song-info").innerHTML=`<strong>${db.playlist[i].title}</strong>`; document.getElementById("song-story").innerHTML=`<em>"${db.playlist[i].story}"</em>`; }
+function renderPlaylist() {
+    const list = document.getElementById("playlist-list");
+    if(!list || !db.playlist) return;
+    list.innerHTML = "";
+    db.playlist.forEach(song => {
+        const li = document.createElement("li");
+        li.innerHTML = `<strong>${song.title}</strong> - ${song.artist}`;
+        li.onclick = () => {
+            document.getElementById("song-info").innerHTML = `<strong>${song.title}</strong> - ${song.artist}`;
+            document.getElementById("song-story").innerHTML = `<div class="card-special" style="font-size:14px; line-height:1.4;">${song.story}</div>`;
+        };
+        list.appendChild(li);
+    });
+}
 function renderMap() { document.getElementById("map-pins-container").innerHTML = db.mapPins.map((p,i) => `<div class="map-pin" style="left:${p.x}%; top:${p.y}%" onclick="showMapDetail(${i})">${p.icon}</div>`).join(''); }
 function showMapDetail(i) { const d = document.getElementById("map-detail"); d.style.display="block"; d.innerHTML=`<strong>${db.mapPins[i].icon} ${db.mapPins[i].label}</strong><p>${db.mapPins[i].desc}</p>`; }
 function renderCalendar() { document.getElementById("calendar-list").innerHTML = db.calendar.map(c => `<div class="calendar-item"><div class="cal-date-box">${c.day}<br><span style="font-size:10px">${c.month}</span></div><div><strong>${c.title}</strong><br><small style="color:#777;">${c.desc}</small></div></div>`).join(''); }
@@ -406,11 +418,11 @@ function renderComebackLists() {
     }
 
     const songsContainer = document.getElementById("nostalgic-songs-list");
-    if(songsContainer && db.nostalgicSongs) {
-        songsContainer.innerHTML = db.nostalgicSongs.map(s => `
+    if(songsContainer && db.sadPlaylist) {
+        songsContainer.innerHTML = db.sadPlaylist.map(s => `
             <div class="song-item">
                 <div class="song-title">${s.title}</div>
-                <div class="song-artist">${s.artist}</div>
+                <div class="song-artist" style="color: #6366f1; font-size: 13px; margin-bottom: 5px;">${s.artist}</div>
                 <div class="song-story">${s.story}</div>
             </div>
         `).join('');
@@ -436,29 +448,39 @@ function initConstellations(canvasId, tooltipId, starsData, connectLines, starCo
     window.addEventListener('resize', resize);
     resize();
 
-    // Fondo de estrellas
-    const bgStars = Array.from({length: 150}, () => ({
+    // Fondo de estrellas (simulando Vía Láctea sutil)
+    const bgStars = Array.from({length: 400}, () => ({
         x: Math.random(), y: Math.random(),
-        s: Math.random() * 1.5,
+        s: Math.random() * (connectLines ? 1.5 : 0.8), // Lado triste estrellas más débiles
         a: Math.random() * Math.PI * 2,
-        speed: 0.02 + Math.random() * 0.03
+        speed: 0.005 + Math.random() * 0.01,
+        isMilkyWay: Math.random() > 0.8
     }));
 
-    const mainStars = starsData.map(st => ({
+    const mainStars = starsData.map((st, i) => ({
         ...st,
-        x: 0.1 + Math.random() * 0.8,
-        y: 0.2 + Math.random() * 0.6,
-        radius: 6 + Math.random() * 3
+        x: 0.2 + (i * 0.3) + Math.random() * 0.1,
+        y: 0.3 + Math.random() * 0.4,
+        radius: 4 + Math.random() * 3
     }));
+
+    // Pensamientos melancólicos
+    const sadThoughts = ["Aún te pienso...", "El tiempo se detuvo.", "Noches largas.", "El cielo está vacío.", "Silencio.", "Ojalá estuvieras."];
+    let activeThoughts = [];
 
     function draw() {
         ctx.clearRect(0, 0, width, height);
         
         // Dibujar estrellas de fondo
-        ctx.fillStyle = starColor;
         bgStars.forEach(bs => {
             bs.a += bs.speed;
-            ctx.globalAlpha = 0.3 + 0.7 * Math.abs(Math.sin(bs.a));
+            if(connectLines) {
+                ctx.fillStyle = starColor;
+                ctx.globalAlpha = bs.isMilkyWay ? 0.6 : (0.2 + 0.5 * Math.abs(Math.sin(bs.a)));
+            } else {
+                ctx.fillStyle = "#4c1d95"; // Estrellas moradas/oscuras en lado triste
+                ctx.globalAlpha = 0.1 + 0.3 * Math.abs(Math.sin(bs.a));
+            }
             ctx.beginPath();
             ctx.arc(bs.x * width, bs.y * height, bs.s, 0, Math.PI * 2);
             ctx.fill();
@@ -466,9 +488,25 @@ function initConstellations(canvasId, tooltipId, starsData, connectLines, starCo
         
         ctx.globalAlpha = 1;
 
+        // Luna en el lado triste
+        if(!connectLines) {
+            ctx.fillStyle = "rgba(255, 255, 255, 0.8)";
+            ctx.shadowBlur = 20;
+            ctx.shadowColor = "#e0e7ff";
+            ctx.beginPath();
+            ctx.arc(width * 0.8, height * 0.2, 30, 0, Math.PI * 2);
+            ctx.fill();
+            // Sombra de la luna menguante
+            ctx.fillStyle = "#000";
+            ctx.shadowBlur = 0;
+            ctx.beginPath();
+            ctx.arc(width * 0.78, height * 0.18, 28, 0, Math.PI * 2);
+            ctx.fill();
+        }
+
         // Dibujar líneas si se solicita
         if(connectLines && mainStars.length > 1) {
-            ctx.strokeStyle = "rgba(255, 255, 255, 0.2)";
+            ctx.strokeStyle = "rgba(255, 255, 255, 0.4)";
             ctx.lineWidth = 1;
             ctx.beginPath();
             ctx.moveTo(mainStars[0].x * width, mainStars[0].y * height);
@@ -480,26 +518,54 @@ function initConstellations(canvasId, tooltipId, starsData, connectLines, starCo
 
         // Dibujar estrellas principales
         mainStars.forEach(ms => {
-            ctx.shadowBlur = 15;
+            ctx.shadowBlur = connectLines ? 20 : 10;
             ctx.shadowColor = starColor;
-            ctx.fillStyle = "#fff";
+            ctx.fillStyle = connectLines ? "#fff" : "#cbd5e1";
             ctx.beginPath();
             ctx.arc(ms.x * width, ms.y * height, ms.radius, 0, Math.PI * 2);
             ctx.fill();
             ctx.shadowBlur = 0;
             
             // Halo sutil
-            ctx.fillStyle = "rgba(255,255,255,0.1)";
+            ctx.fillStyle = connectLines ? "rgba(255,255,255,0.15)" : "rgba(255,255,255,0.05)";
             ctx.beginPath();
             ctx.arc(ms.x * width, ms.y * height, ms.radius * 2.5, 0, Math.PI * 2);
             ctx.fill();
         });
+
+        // Dibujar pensamientos activos (solo lado triste)
+        if(!connectLines) {
+            for(let i=activeThoughts.length-1; i>=0; i--) {
+                let t = activeThoughts[i];
+                t.life -= 0.01;
+                if(t.life <= 0) {
+                    activeThoughts.splice(i, 1);
+                    continue;
+                }
+                ctx.fillStyle = `rgba(165, 180, 252, ${t.life})`;
+                ctx.font = "14px 'Courier New'";
+                ctx.fillText(t.text, t.x, t.y);
+                t.y -= 0.5; // Flota hacia arriba
+            }
+        }
 
         requestAnimationFrame(draw);
     }
     draw();
 
     // Interactividad
+    canvas.addEventListener('click', (e) => {
+        if(!connectLines) {
+            const rect = canvas.getBoundingClientRect();
+            activeThoughts.push({
+                x: e.clientX - rect.left,
+                y: e.clientY - rect.top,
+                text: sadThoughts[Math.floor(Math.random() * sadThoughts.length)],
+                life: 1.0
+            });
+        }
+    });
+
     canvas.addEventListener('mousemove', (e) => {
         const rect = canvas.getBoundingClientRect();
         const mouseX = e.clientX - rect.left;

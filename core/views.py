@@ -37,7 +37,11 @@ def home(request):
         ],
         "playlist": [
             {"title": p.title, "artist": p.artist, "story": p.story}
-            for p in PlaylistSong.objects.all()
+            for p in PlaylistSong.objects.filter(is_sad=False)
+        ],
+        "sadPlaylist": [
+            {"title": p.title, "artist": p.artist, "story": p.story}
+            for p in PlaylistSong.objects.filter(is_sad=True)
         ],
         "mapPins": [
             {"x": m.x, "y": m.y, "icon": m.icon, "label": m.label, "desc": m.desc}
